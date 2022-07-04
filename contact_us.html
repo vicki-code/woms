@@ -5,52 +5,62 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Appliance Repair - Contact Us</title>
+    <link rel="stylesheet" href="./assets/css/bootstrap.css">
+    <script src="./assets/js/bootstrap.bundle.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <header>
-        <div>Appliance Repair</div>
-        <nav>
-            <ul>
-                <li><a href="/index.html">Home</a></li>
-                <li><a href="/request.html">Online Booking</a></li>
-                <li><a href="/contact_us.html">Contact Us</a></li>
-            </ul>
-        </nav>
+    <header class="header">
+        <div class="main-menu">
+            <div class="main-menu-logo"></div>
+            <div class="main-menu-container">
+                <div class="main-menu-topbar"></div>
+                <nav>
+                    <div class="main-menu-list">
+                        <div class="main-menu-item"><a href="/index.html">Home</a></div>
+                        <div class="main-menu-item"><a href="/request.html">Online Booking</a></div>
+                        <div class="main-menu-item active"><a href="/contact_us.html">Contact Us</a></div>
+                    </div>
+                </nav>
+            </div>
+        </div>
     </header>
-    <main>
-        <h1>Contact Us</h1>
-        <div>
-            <img src="/assets/images/logo.png" height="150" width="100"> 
+    <main class="content">
+        <div class="container content-block">
+            <div class="row">
+                <h1>Contact Us</h1>
+                <form class="col-sm-12 col-md-6 form-module">
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <input type="text" name="name" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone *</label>
+                        <input type="tel" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required
+                            class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea name="message" class="form-control"> </textarea>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Send" class="form-control btn btn-primary">
+                    </div>
+                </form>
+                <div class="col-sm-12 col-md-3">
+                    <p>Call: +1 403-111-2233</p>
+                    <p> Text: +1 403-111-2233</p>
+                    <p>Email: info@appliancerepair.ca</p>
+                </div>
+            </div>
         </div>
-        <div>
-            <p>Call: +1 403-111-2233</p>
-            <p> Text: +1 403-111-2233</p>
-            <p>Email: info@appliancerepair.ca</p>
-        </div>
-        <form>
-            <div>
-                <label for="name">Name *</label>
-                <input type="text" name="name" required>
-            </div>
-            <div>
-                <label for="phone">Phone *</label>
-                <input type="tel" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
-            </div>
-            <div>
-                <label for="email">Email</label>
-                <input type="email" name="email">
-            </div>
-            <div>
-                <label for="message">Message</label>
-                <textarea name="message"> </textarea>
-            </div>
-            <div>
-                <input type="submit" value="Request">
-            </div>
-        </form>
     </main>
-    <footer>
+    <footer class="footer">
         <div>
             <ul>
                 <li>© 2022 Appliance Repair</li>
