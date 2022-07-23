@@ -140,15 +140,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary {
-    display: inline-block;
-    padding: 0.75em 2em;
-    margin: 0 0 1em;
-    min-height: 1em;
-    line-height: 1.2em;
     text-align: center;
     text-decoration: none;
     outline: 0;
-    border: none;
+    border: 1px solid transparent;
     color: #fff;
     background: #3e844b;
     transition: background .15s ease;
@@ -159,9 +154,16 @@ h1, h2, h3, h4, h5, h6 {
     background: #6fb47c;
 }
 
+.btn-primary-custom {
+    display: inline-block;
+    padding: 0.75em 2em;
+    margin: 0 0 1em;
+    min-height: 1em;
+    line-height: 1.2em;
+}
+
 .requestimg {
     padding: 5px;
-    background-color: white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -172,6 +174,97 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 300px;
 }
 
+.orders-panel {
+    max-width: 1420px;
+      background: hsla(0,0%,100%,.3);
+    padding: 30px 30px 30px 20px;
+    min-height: 200px;
+}
+
+
+.btn-find {
+    height: 38px;
+    font-size: 1em;
+}
+
+.order-items {
+    min-height: 200px;
+    max-width: 1420px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 12px;
+}
+
+.order-item {
+    background-color: white;
+    color: #005087;
+    padding: 20px;
+    margin-bottom: 10px;
+    border-left: solid gray 10px;
+    cursor: pointer;
+}
+
+.order-item.requested {
+    border-left: solid gray 10px;
+}
+
+.order-item.done {
+    border-left: solid green 10px;
+}
+
+.order-item.confirmed {
+    border-left: solid orange 10px;
+}
+
+.order-item.canceled {
+    border-left: solid red 10px;
+}
+
+.order-item:hover {
+    background: #ebebeb;
+}
+
+.order-item-date {
+    border-right: #005087 solid 1px;
+}
+
+.order-item .time {
+    font-size: 1.5em;
+    font-weight: 700;
+}
+
+.order-item .date {
+    font-size: 1.1em;
+}
+
+.order-item .name {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.order-item .status {
+    font-weight: 600;
+}
+
+.order-item .status.requested {
+    color:  gray;
+}
+
+.order-item .status.done {
+    color: green;
+}
+
+.order-item .status.confirmed {
+    color: orange;
+}
+
+.order-item .status.canceled {
+   color: red;
+}
+
+.modal-header {
+    background-color: #005087;
+}
 
 @media only screen and (max-width: 600px) {
     .container.content-block {
@@ -225,5 +318,22 @@ h1, h2, h3, h4, h5, h6 {
     
     .main-menu-item a {
         font-size: 1em;
+    }
+
+    .order-item-date {
+        border-right: 0px;
+        border-bottom: #005087 solid 1px;
+        padding-bottom: 5px;
+        margin-bottom: 5px;
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+    }
+
+    .order-item-date .date {
+        text-align: right;
+        flex-grow: 1;
+        font-size: 1.5em;
+        font-weight: 400;
     }
   }

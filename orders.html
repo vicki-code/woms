@@ -1,0 +1,199 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appliance Repair</title>
+    <link rel="stylesheet" href="./assets/css/bootstrap.css">
+    <script src="./assets/js/bootstrap.bundle.js"></script>
+    <script src="./main.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="main-menu">
+            <div class="main-menu-logo"></div>
+            <div class="main-menu-container">
+                <div class="main-menu-topbar"></div>
+                <nav>
+                    <div class="main-menu-list">
+                        <div class="main-menu-item"><a href="/index.html">Home</a></div>
+                        <div class="main-menu-item"><a href="/request.html">Online Booking</a></div>
+                        <div class="main-menu-item"><a href="/orders.html">Orders</a></div>
+                        <div class="main-menu-item"><a href="/contact_us.html">Contact Us</a></div>
+                        <div class="main-menu-item"><a href="/login.html">Login</a></div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <main class="content">
+        <div class="container content-block">
+            <div class="row">
+                <div class="md-12">
+                    <h1>Orders</h1>
+                    <div class="container orders-panel">
+                        <form class="row">
+                            <div class="form-group col-sm-12 col-md-3">
+                                <label for="date">Date</label>
+                                <input type="date" name="date" required class="form-control">
+                            </div>
+                            <div class="form-group  col-sm-12 col-md-3">
+                                <label for="status">Status</label>
+                                <select class="form-select">
+                                    <option value="all" selected>All</option>
+                                    <option value="requested">Requested</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="canceled">Canceled</option>
+                                    <option value="done">Done</option>
+                                </select>
+                            </div>
+                            <div class="form-group  col-sm-12 col-md-3">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" class="form-control">
+                            </div>
+                            <div class="form-group  col-sm-12 col-md-3">
+                                <label for="btnSearch">&nbsp;</label>
+                                <input type="button" name="btnSearch" value="Find"
+                                    class="form-control btn btn-primary btn-find">
+                            </div>
+                        </form>
+
+                        <div id="itemsContainer" class="container order-items">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12-cal">
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="orderDetails" tabindex="-1" aria-labelledby="orderDetails" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="Order Details">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div>
+            <ul>
+                <li>© 2022 Appliance Repair</li>
+                <li>Phone: +1 403-111-2233</li>
+            </ul>
+        </div>
+    </footer>
+
+
+    <template id="itemTemplate">
+        <div class="row order-item" data-bs-toggle="modal" data-bs-target="#orderDetails" data-bs-id="3">
+            <div class="col-sm-2 col-md-2 order-item-date">
+                <div class="time"></div>
+                <div class="date"></div>
+            </div>
+            <div class="col-sm-8 col-md-8 order-item-info">
+                <div class="name"></div>
+                <div class="address"></div>
+                <div class="status"></div>
+            </div>
+            <div class="col-sm-2 col-md-2">
+
+            </div>
+        </div>
+    </template>
+
+    <script>
+        var data = [
+            {
+                "name": "John Doe",
+                "address": "123 Main str.",
+                "status": "requested",
+                "status_text": "Requested",
+                "time": "10:00 am",
+                "date": "2022-07-11"
+            },
+            {
+                "name": "John Smitt",
+                "address": "124 Main str.",
+                "status": "canceled",
+                "status_text": "Canceled",
+                "time": "11:00 am",
+                "date": "2022-07-12"
+            },
+            {
+                "name": "Jane Scott",
+                "address": "125 Main str.",
+                "status": "done",
+                "status_text": "Done",
+                "time": "12:00 am",
+                "date": "2022-07-12"
+            },
+            {
+                "name": "Marry Round",
+                "address": "123 Center ave.",
+                "status": "confirmed",
+                "status_text": "Confirmed",
+                "time": "10:00 am",
+                "date": "2022-07-13"
+            },
+        ];
+
+        function renderItems() {
+            let temp = document.getElementById("itemTemplate");
+            let itemsContainer = document.getElementById("itemsContainer");
+            //get the div element from the template:
+            let template = temp.content.querySelector("div");
+            //for each item in the array:
+            for (let i = 0; i < data.length; i++) {
+                //Create a new node, based on the template:
+                let item = document.importNode(template, true);
+
+                item.classList.add(data[i].status)
+                item.setAttribute("data-bs-idx", i.toString())
+                item.getElementsByClassName("name")[0].innerText = data[i].name;
+                item.getElementsByClassName("time")[0].innerText = data[i].time;
+                item.getElementsByClassName("date")[0].innerText = data[i].date;
+                let inpStatus = item.getElementsByClassName("status")[0]
+                inpStatus.innerText = data[i].status_text;
+                inpStatus.innerText.charAt(0).toUpperCase();
+                inpStatus.classList.add(data[i].status)
+                item.getElementsByClassName("address")[0].innerText = data[i].address;
+
+                //append the new node
+                itemsContainer.appendChild(item);
+            }
+        }
+
+        window.addEventListener('load', (event) => {
+            renderItems();
+        });
+
+        let orderDetails = document.getElementById('orderDetails')
+        orderDetails.addEventListener('show.bs.modal', function (event) {
+            let row = event.relatedTarget
+            let idx = row.getAttribute('data-bs-idx')
+
+            let modalTitle = orderDetails.querySelector('.modal-title')
+
+            modalTitle.textContent = data[idx].name
+        })
+
+    </script>
+</body>
+
+</html>
