@@ -72,9 +72,20 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="date" class="col-sm-12 col-md-4">Appoutment Date and time</label>
+                        <label for="date" class="col-sm-12 col-md-4">Appointment Date</label>
                         <div class="col-sm-12 col-md-8">
-                            <input type="datetime-local" name="date" class="form-control col-sm-12 col-md-8">
+                            <input type="date" name="date" class="form-control col-sm-12 col-md-8">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="date" class="col-sm-12 col-md-4">Preffered Time</label>
+                        <div class="col-sm-12 col-md-8">
+                            <select name="time" class="form-select">
+                                <option value="any" selected>Any</option>
+                                <option value="morning">Morning (8am-12pm)</option>
+                                <option value="afternoon">Afternoon (1pm-4pm)</option>
+                                <option value="evening">Evening (4pm-8pm)</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group row">

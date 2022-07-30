@@ -79,9 +79,75 @@
                         <h5 class="modal-title" id="Order Details">Modal title</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        ...
+                    <div class="modal-body container">
+                        <div class="form-group row">
+                            <label for="first_name" class="col-sm-12 col-md-4">First Name</label>
+                            <div class="col-sm-12 col-md-8">
+                                <input type="text" name="first_name" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="last_name" class="col-sm-12 col-md-4">Last Name</label>
+                            <div class="col-sm-12 col-md-8">
+                                <input type="text" name="last_name" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="phone" class="col-sm-12 col-md-4">Phone</label>
+                            <div class="col-sm-12 col-md-8">
+                                <input type="text" name="phone" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="email" class="col-sm-12 col-md-4">Email</label>
+                            <div class="col-sm-12 col-md-8">
+                                <input type="email" name="email" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="address" class="col-sm-12 col-md-4">Address</label>
+                            <div class="col-sm-12 col-md-8">
+                                <input type="text" name="address" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="description" class="col-sm-12 col-md-4">Description</label>
+                            <div class="col-sm-12 col-md-8">
+                                <textarea name="description" class="form-control col-sm-12 col-md-8"> </textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="date" class="col-sm-12 col-md-4">Appointment Date</label>
+                            <div class="col-sm-12 col-md-8">
+                                <input type="date" name="date" class="form-control col-sm-12 col-md-8">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="date" class="col-sm-12 col-md-4">Preffered Time</label>
+                            <div class="col-sm-12 col-md-8">
+                                <select name="time" class="form-select">
+                                    <option value="any" selected>Any</option>
+                                    <option value="morning">Morning (8am-12pm)</option>
+                                    <option value="afternoon">Afternoon (1pm-4pm)</option>
+                                    <option value="evening">Evening (4pm-8pm)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="status" class="col-sm-12 col-md-4">Status</label>
+                            <div class="col-sm-12 col-md-8">
+                                <select name="status" class="form-select">
+                                    <option value="all" selected>All</option>
+                                    <option value="requested">Requested</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="canceled">Canceled</option>
+                                    <option value="done">Done</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary">Save changes</button>
@@ -120,15 +186,22 @@
     <script>
         var data = [
             {
-                "name": "John Doe",
+                "id": 1,
+                "first_name": "John",
+                "last_name": "Doe",
                 "address": "123 Main str.",
+                "phone": "+1 403 123 4455",
+                "email": "john.doe@somedomain.com",
+                "description": "Dishwasher is leaking",
                 "status": "requested",
                 "status_text": "Requested",
                 "time": "10:00 am",
                 "date": "2022-07-11"
             },
             {
-                "name": "John Smitt",
+                "id": 2,
+                "first_name": "John",
+                "last_name": "Smitt",
                 "address": "124 Main str.",
                 "status": "canceled",
                 "status_text": "Canceled",
@@ -136,7 +209,9 @@
                 "date": "2022-07-12"
             },
             {
-                "name": "Jane Scott",
+                "id": 3,
+                "first_name": "Jane",
+                "last_name": "Scott",
                 "address": "125 Main str.",
                 "status": "done",
                 "status_text": "Done",
@@ -144,7 +219,9 @@
                 "date": "2022-07-12"
             },
             {
-                "name": "Marry Round",
+                "id": 4,
+                "first_name": "Marry",
+                "last_name": "Round",
                 "address": "123 Center ave.",
                 "status": "confirmed",
                 "status_text": "Confirmed",
@@ -165,7 +242,7 @@
 
                 item.classList.add(data[i].status)
                 item.setAttribute("data-bs-idx", i.toString())
-                item.getElementsByClassName("name")[0].innerText = data[i].name;
+                item.getElementsByClassName("name")[0].innerText = data[i].first_name+" "+data[i].last_name;
                 item.getElementsByClassName("time")[0].innerText = data[i].time;
                 item.getElementsByClassName("date")[0].innerText = data[i].date;
                 let inpStatus = item.getElementsByClassName("status")[0]
@@ -189,8 +266,31 @@
             let idx = row.getAttribute('data-bs-idx')
 
             let modalTitle = orderDetails.querySelector('.modal-title')
+            modalTitle.textContent = data[idx].id+" | "+data[idx].first_name+" "+data[idx].last_name
 
-            modalTitle.textContent = data[idx].name
+            let firstName = orderDetails.querySelector('.modal-body [name="first_name"]')
+            firstName.value = data[idx].first_name
+
+            let lastName = orderDetails.querySelector('.modal-body [name="last_name"]')
+            lastName.value = data[idx].last_name
+
+            let address = orderDetails.querySelector('.modal-body [name="address"]')
+            address.value = data[idx].address
+
+            let date = orderDetails.querySelector('.modal-body [name="date"]')
+            date.value = data[idx].date
+
+            let status = orderDetails.querySelector('.modal-body [name="status"]')
+            status.value = data[idx].status
+
+            let phone = orderDetails.querySelector('.modal-body [name="phone"]')
+            phone.value = data[idx].phone
+
+            let email = orderDetails.querySelector('.modal-body [name="email"]')
+            email.value = data[idx].email
+
+            let description = orderDetails.querySelector('.modal-body [name="description"]')
+            description.value = data[idx].description
         })
 
     </script>

@@ -266,6 +266,10 @@ h1, h2, h3, h4, h5, h6 {
     background-color: #005087;
 }
 
+.modal-body {
+    color: #132332;
+}
+
 @media only screen and (max-width: 600px) {
     .container.content-block {
         padding-left: 10px;
