@@ -1,0 +1,31 @@
+{
+  "name": "woms",
+  "version": "1.0.0",
+  "description": "Work Order Management System",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vicki-code/woms.git"
+  },
+  "author": "Vicki Yunak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vicki-code/woms/issues"
+  },
+  "homepage": "https://github.com/vicki-code/woms#readme",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0",
+    "jsonwebtoken": "^8.5.1",
+    "modules": "^0.4.0",
+    "mongoose": "^6.3.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
