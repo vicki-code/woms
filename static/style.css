@@ -270,6 +270,15 @@ h1, h2, h3, h4, h5, h6 {
     color: #132332;
 }
 
+.hidden {
+    display: none;
+}
+
+.err-msg {
+    color: red;
+    font-weight: 600;
+}
+
 @media only screen and (max-width: 600px) {
     .container.content-block {
         padding-left: 10px;

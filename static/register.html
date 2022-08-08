@@ -19,20 +19,38 @@
             }
         }
 
-        function login() {
-            let formData = new FormData(document.getElementById("frmLogin"));
+        function register() {     
+            let inputs = document.getElementsByTagName("input")
+            for(var i=0; i < inputs.length; i++){
+                if(inputs[i].value === '' && inputs[i].hasAttribute('required')){
+                    let errLabel = document.getElementById("lblError");
+                    errLabel.classList.remove("hidden");
+                    errLabel.innerText = "Please fill all required fields";
+                    return false;
+                }
+            }
+
+            let pwd = document.getElementsByName("pwd")[0]
+            let pwd2 = document.getElementsByName("pwd2")[0]
+
+            if (pwd.value!=pwd2.value){
+                let errLabel = document.getElementById("lblError");
+                errLabel.classList.remove("hidden");
+                errLabel.innerText = "Passwords do not match";
+                return false;
+            }
+
+            let formData = new FormData(document.getElementById("frmRegister"));
             let jsonBody = JSON.stringify(Object.fromEntries(formData));
 
-            fetch('/api/auth/login', {
+            fetch('/api/auth/register', {
                 method: "POST", headers: {
                     'Content-Type': 'application/json'
                 },
                 body: jsonBody
             })
             .then(response => {
-                if (response.status == 200) {
-                    let user = response.json();
-                    localStorage.setItem("user", JSON.stringify(user));
+                if (response.status == 201) {
                     window.location.href = '/index.html';
                 } else {
                     let errLabel = document.getElementById("lblError");
@@ -40,6 +58,7 @@
                     errLabel.innerText = response.json().status;
                 }
             })
+
             return false;
         }
     </script>
@@ -71,25 +90,36 @@
                 <div class="col-md-3">
                 </div>
                 <div class="col-md-6">
-                    <h1>Login</h1>
-                    <form class="form-module" id="frmLogin">
+                    <h1>Register</h1>
+                    <form class="form-module" id="frmRegister">
                         <div class="form-group">
-                            <label for="email">Email *</label>
+                            <label for="first_name">First Name</label>
+                            <input type="text" name="first_name" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" name="last_name" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
                             <input type="email" name="email" required class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="pwd">Password *</label>
-                            <input type="password" name="pwd" required
-                                class="form-control">
+                            <input type="password" name="pwd" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd2">Confirm Password *</label>
+                            <input type="password" name="pwd2" required class="form-control">
                         </div>
                         <div class="form-group">
                             <label id="lblError" class="err-msg hidden"></label>
                         </div>
                         <div class="form-group">
-                            <input type="submit" value="Login" onclick="return login();" class="form-control btn btn-primary">
+                            <input type="submit" value="Register" onclick="return register();" class="form-control btn btn-primary">
                         </div>
                     </form>
-                 </div>
+                </div>
                 <div class="col-md-3">
                 </div>
             </div>
