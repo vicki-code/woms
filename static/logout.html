@@ -14,36 +14,37 @@
         window.onload = function (e) {
             var user = JSON.parse(localStorage.getItem("user"));
 
-            if (user != null && user != undefined) {
+            if (user == null || user == undefined) {
                 window.location.href = '/index.html';
             }
+
+            logout();
         }
 
-        function login() {
-            let formData = new FormData(document.getElementById("frmLogin"));
-            let jsonBody = JSON.stringify(Object.fromEntries(formData));
-
-            fetch('/api/auth/login', {
+        function logout() {
+            fetch('/api/auth/logout', {
                 method: "POST", headers: {
                     'Content-Type': 'application/json'
-                },
-                body: jsonBody
+                }
             })
-                .then(response => {
-                    if (response.status == 200) {
-                        return response.json();
-                    } else {
-                        let errLabel = document.getElementById("lblError");
-                        errLabel.classList.remove("hidden");
-                        errLabel.innerText = response.json().status;
-                        return null;
-                    }
-                }).then(data => {
-                    if (data != null) {
-                        localStorage.setItem("user", JSON.stringify(data));
-                        window.location.href = '/index.html';
-                    }
-                })
+            .then(response => {
+                console.log(response.status);
+                if (response.status == 200) {
+                    console.log("hit 1");
+                    localStorage.removeItem("user");
+                    let lblSuccess = document.getElementById("lblSuccess");
+                    lblSuccess.classList.remove("hidden");
+                    let errLabel = document.getElementById("lblError");
+                    errLabel.classList.add("hidden");
+                    renderMenu();
+                } else {
+                    let lblSuccess = document.getElementById("lblSuccess");
+                    lblSuccess.classList.add("hidden");
+                    let errLabel = document.getElementById("lblError");
+                    errLabel.classList.remove("hidden");
+                    errLabel.innerText = response.json().status;
+                }
+            })
             return false;
         }
     </script>
@@ -75,25 +76,22 @@
                 <div class="col-md-3">
                 </div>
                 <div class="col-md-6">
-                    <h1>Login</h1>
+                    <h1>Logout</h1>
                     <form class="form-module" id="frmLogin">
                         <div class="form-group">
-                            <label for="email">Email *</label>
-                            <input type="email" name="email" required class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="pwd">Password *</label>
-                            <input type="password" name="pwd" required class="form-control">
+                            <label id="lblSuccess">You are successfully logged out.</label>
                         </div>
                         <div class="form-group">
                             <label id="lblError" class="err-msg hidden"></label>
                         </div>
                         <div class="form-group">
-                            <input type="submit" value="Login" onclick="return login();"
-                                class="form-control btn btn-primary">
+                            <a href="/login.html" class="form-control btn btn-secondary">Login again</a>
+                        </div>
+                        <div class="form-group">
+                            <a href="/index.html" class="form-control btn btn-primary">Go to home page</a>
                         </div>
                     </form>
-                </div>
+                 </div>
                 <div class="col-md-3">
                 </div>
             </div>

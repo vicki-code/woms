@@ -82,8 +82,7 @@ router.post("/login", async (req, res) => {
 
 });
 
-router.get('/logout', function (req, res) {
-    req.logout();
+router.post('/logout', function (req, res) {
     res.status(200).json({
         status: 'Logged out'
     });
