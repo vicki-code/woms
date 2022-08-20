@@ -12,11 +12,60 @@
 
     <script>
         window.onload = function (e) {
-            var user = JSON.parse(localStorage.getItem("user"));
-
-            if (user == null || user == undefined) {
+            if (!isUserLoggedIn()) {
+                alert("Please login to place a service request")
                 window.location.href = '/login.html';
             }
+        }
+
+        function sendRequest() {
+            let formData = new FormData(document.getElementById("frmRequest"));
+            let formJson = Object.fromEntries(formData);
+
+            let user = JSON.parse(localStorage.getItem("user"));
+
+            let jsonBody = JSON.stringify({
+                user_id: user._id,
+                first_name: formJson.first_name,
+                last_name: formJson.last_name,
+                phone: formJson.phone,
+                email: formJson.email,
+                address: formJson.address,
+                order_status: "requested",
+                description: formJson.description,
+                appointments: [
+                    {
+                        appointment_date: formJson.date,
+                        preferred_time: formJson.time,
+                        appointment_status: "requested"
+                    }
+                ]
+            });
+
+            fetch('/api/orders/', {
+                method: "POST", 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': `Bearer ${user.accessToken}`
+                },
+                body: jsonBody
+            })
+                .then(response => {
+                    if (response.status == 200) {
+                        return response.json();
+                    } else {
+                        let errLabel = document.getElementById("lblError");
+                        errLabel.classList.remove("hidden");
+                        errLabel.innerText = response.json().status;
+                        return null;
+                    }
+                }).then(data => {
+                    if (data != null) {
+                        alert("Request placed!")
+                        window.location.href = '/orders.html';
+                    }
+                })
+            return false;
         }
     </script>
 </head>
@@ -44,7 +93,7 @@
     <main class="content">
         <div class="container content-block">
             <h1>Online Booking</h1>
-            <form class="form row">
+            <form class="form row" id="frmRequest">
                 <div class="form-module col-sm-12 col-md-6 col-lg-7 content-block">
                     <div class="form-group row">
                         <label for="first_name" class="col-sm-12 col-md-4">First Name *</label>
@@ -102,7 +151,13 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-sm-12">
-                            <input type="submit" value="Request" class="btn btn-primary float-end">
+                            <label id="lblError" class="err-msg hidden"></label>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <input type="submit" value="Request" class="btn btn-primary float-end"
+                                onclick="return sendRequest();">
                         </div>
                     </div>
                 </div>
@@ -110,7 +165,7 @@
 
                 </div>
                 <div class="requestimg hidden-sm col-md-5 col-lg-4">
-                    <img src="assets/images/repairman.png"/>
+                    <img src="assets/images/repairman.png" />
                 </div>
             </form>
         </div>

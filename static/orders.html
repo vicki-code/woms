@@ -161,7 +161,8 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" id="btnCancelOrder" onclick="return cancelOrder();" class="btn btn-danger">Cancel order</button>
+                        <button type="button" id="btnSave" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -195,76 +196,63 @@
     </template>
 
     <script>
-        var data = [
-            {
-                "id": 1,
-                "first_name": "John",
-                "last_name": "Doe",
-                "address": "123 Main str.",
-                "phone": "+1 403 123 4455",
-                "email": "john.doe@somedomain.com",
-                "description": "Dishwasher is leaking",
-                "status": "requested",
-                "status_text": "Requested",
-                "time": "10:00 am",
-                "date": "2022-07-11"
-            },
-            {
-                "id": 2,
-                "first_name": "John",
-                "last_name": "Smitt",
-                "address": "124 Main str.",
-                "status": "canceled",
-                "status_text": "Canceled",
-                "time": "11:00 am",
-                "date": "2022-07-12"
-            },
-            {
-                "id": 3,
-                "first_name": "Jane",
-                "last_name": "Scott",
-                "address": "125 Main str.",
-                "status": "done",
-                "status_text": "Done",
-                "time": "12:00 am",
-                "date": "2022-07-12"
-            },
-            {
-                "id": 4,
-                "first_name": "Marry",
-                "last_name": "Round",
-                "address": "123 Center ave.",
-                "status": "confirmed",
-                "status_text": "Confirmed",
-                "time": "10:00 am",
-                "date": "2022-07-13"
-            },
-        ];
+        let orders = null;
 
         function renderItems() {
-            let temp = document.getElementById("itemTemplate");
-            let itemsContainer = document.getElementById("itemsContainer");
-            //get the div element from the template:
-            let template = temp.content.querySelector("div");
-            //for each item in the array:
-            for (let i = 0; i < data.length; i++) {
-                //Create a new node, based on the template:
-                let item = document.importNode(template, true);
 
-                item.classList.add(data[i].status)
-                item.setAttribute("data-bs-idx", i.toString())
-                item.getElementsByClassName("name")[0].innerText = data[i].first_name+" "+data[i].last_name;
-                item.getElementsByClassName("time")[0].innerText = data[i].time;
-                item.getElementsByClassName("date")[0].innerText = data[i].date;
-                let inpStatus = item.getElementsByClassName("status")[0]
-                inpStatus.innerText = data[i].status_text;
-                inpStatus.innerText.charAt(0).toUpperCase();
-                inpStatus.classList.add(data[i].status)
-                item.getElementsByClassName("address")[0].innerText = data[i].address;
-
-                //append the new node
-                itemsContainer.appendChild(item);
+            if (!isUserLoggedIn()) {
+                alert("Plese log in to see orders!");
+                window.location.href = "/Login.html"
+                return false;
             }
+
+            var user = JSON.parse(localStorage.getItem("user"));
+
+            fetch('http://localhost:3300/api/orders/', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': `Bearer ${user.accessToken}`
+                }
+            })
+                .then(response => {
+                    if (response.status == 200 || response.status == 304) {
+                        return response.json()
+                    } else {
+                        alert("Error:" + response.statusText)
+                        return null
+                    }
+                }
+                ).then(data => {
+                    orders = data;
+
+                    if (orders != null && orders != undefined) {
+                        let temp = document.getElementById("itemTemplate");
+                        let itemsContainer = document.getElementById("itemsContainer");
+                        //get the div element from the template:
+                        let template = temp.content.querySelector("div");
+                        //for each item in the array:
+                        for (let i = 0; i < orders.length; i++) {
+                            //Create a new node, based on the template:
+                            let item = document.importNode(template, true);
+                            let order = orders[i]
+
+                            item.classList.add(order.order_status)
+                            item.setAttribute("data-bs-idx", i.toString())
+                            item.getElementsByClassName("name")[0].innerText = order.first_name + " " + order.last_name;
+                            let latestAppt = order.appointments[order.appointments.length - 1]
+                            item.getElementsByClassName("time")[0].innerText = latestAppt.preferred_time;
+                            item.getElementsByClassName("date")[0].innerText = latestAppt.appointment_date.toString('MM/dd/yyyy');
+                            let inpStatus = item.getElementsByClassName("status")[0]
+                            inpStatus.innerText = order.order_status;
+                            inpStatus.innerText.charAt(0).toUpperCase();
+                            inpStatus.classList.add(order.order_status)
+                            item.getElementsByClassName("address")[0].innerText = order.address;
+
+                            //append the new node
+                            itemsContainer.appendChild(item);
+                        }
+                    }
+                })
         }
 
         window.addEventListener('load', (event) => {
@@ -275,35 +263,76 @@
         orderDetails.addEventListener('show.bs.modal', function (event) {
             let row = event.relatedTarget
             let idx = row.getAttribute('data-bs-idx')
+            selectedOrder =  orders[idx]._id;
 
             let modalTitle = orderDetails.querySelector('.modal-title')
-            modalTitle.textContent = data[idx].id+" | "+data[idx].first_name+" "+data[idx].last_name
+            modalTitle.textContent = orders[idx]._id + " | " + orders[idx].first_name + " " + orders[idx].last_name
 
             let firstName = orderDetails.querySelector('.modal-body [name="first_name"]')
-            firstName.value = data[idx].first_name
+            firstName.value = orders[idx].first_name
 
             let lastName = orderDetails.querySelector('.modal-body [name="last_name"]')
-            lastName.value = data[idx].last_name
+            lastName.value = orders[idx].last_name
 
             let address = orderDetails.querySelector('.modal-body [name="address"]')
-            address.value = data[idx].address
+            address.value = orders[idx].address
 
             let date = orderDetails.querySelector('.modal-body [name="date"]')
-            date.value = data[idx].date
+            date.value = orders[idx].date
 
             let status = orderDetails.querySelector('.modal-body [name="status"]')
-            status.value = data[idx].status
+            status.value = orders[idx].order_status
 
             let phone = orderDetails.querySelector('.modal-body [name="phone"]')
-            phone.value = data[idx].phone
+            phone.value = orders[idx].phone
 
             let email = orderDetails.querySelector('.modal-body [name="email"]')
-            email.value = data[idx].email
+            email.value = orders[idx].email
 
             let description = orderDetails.querySelector('.modal-body [name="description"]')
-            description.value = data[idx].description
+            description.value = orders[idx].description
+
+            let btnCancelOrder = orderDetails.querySelector('.modal-body [name="first_name"]')
+            if (orders[idx].order_status == "requested" || rders[idx].order_status == "confirmed") {
+                btnCancelOrder.classList.remove("hidden")
+            } else {
+                btnCancelOrder.classList.add("hidden")
+            }
+
+            if (orders[idx].order_status == "requested" || rders[idx].order_status == "confirmed") {
+                btnCancelOrder.classList.remove("hidden")
+            } else {
+                btnCancelOrder.classList.add("hidden")
+            }
         })
 
+        let selectedOrder = null
+
+        function cancelOrder() {
+            var user = JSON.parse(localStorage.getItem("user"));
+
+            fetch('/api/orders/'+selectedOrder+'/cancel', {
+                method: "PUT", 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': `Bearer ${user.accessToken}`
+                }
+            })
+                .then(response => {
+                    if (response.status == 200) {
+                        return response.json();
+                    } else {
+                        alert("Error:" +response.json().status);
+                        return null;
+                    }
+                }).then(data => {
+                    if (data != null) {
+                        alert("Service Request has been canceled")
+                        window.location.href = '/orders.html';
+                    }
+                })
+            return false;
+        }
     </script>
 </body>
 

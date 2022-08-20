@@ -11,8 +11,7 @@ function renderMenu() {
     }
 
     // Set visibility for menus
-    var user = JSON.parse(localStorage.getItem("user"));
-    const authorized = user != null && user != undefined
+    const authorized = isUserLoggedIn();
 
     if (authorized) {
         document.getElementsByClassName("item-login")[0].classList.add("hidden");
@@ -34,3 +33,8 @@ function renderMenu() {
 window.addEventListener('load', (event) => {
     renderMenu();
 });
+
+function isUserLoggedIn() {
+    var user = JSON.parse(localStorage.getItem("user"));
+    return user != null && user != undefined && user.role != null && user.role != undefined
+}

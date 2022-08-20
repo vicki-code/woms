@@ -12,9 +12,7 @@
 
     <script>
         window.onload = function (e) {
-            var user = JSON.parse(localStorage.getItem("user"));
-
-            if (user != null && user != undefined) {
+            if (isUserLoggedIn()) {
                 window.location.href = '/index.html';
             }
         }

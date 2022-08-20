@@ -12,9 +12,8 @@
 
     <script>
         window.onload = function (e) {
-            var user = JSON.parse(localStorage.getItem("user"));
-
-            if (user != null && user != undefined) {
+            if (isUserLoggedIn()) {
+                alert("You are already logged in. Please log out if you want to log in as a different user!")
                 window.location.href = '/index.html';
             }
         }

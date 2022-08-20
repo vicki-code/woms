@@ -12,9 +12,7 @@
 
     <script>
         window.onload = function (e) {
-            var user = JSON.parse(localStorage.getItem("user"));
-
-            if (user == null || user == undefined) {
+            if (!isUserLoggedIn()) {
                 window.location.href = '/index.html';
             }
 
@@ -30,7 +28,7 @@
             .then(response => {
                 console.log(response.status);
                 if (response.status == 200) {
-                    console.log("hit 1");
+                    localStorage.setItem("user", null);
                     localStorage.removeItem("user");
                     let lblSuccess = document.getElementById("lblSuccess");
                     lblSuccess.classList.remove("hidden");
