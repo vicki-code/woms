@@ -38,3 +38,8 @@ function isUserLoggedIn() {
     var user = JSON.parse(localStorage.getItem("user"));
     return user != null && user != undefined && user.role != null && user.role != undefined
 }
+
+function formatDate(dateStr) {
+    let date = new Date(dateStr);
+    return date.toISOString().substring(0, 10);
+}

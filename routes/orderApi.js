@@ -71,15 +71,24 @@ router.put("/:id/cancel", verifyAccess, async (req, res) => {
 //GET ALL
 router.get("/", verifyToken, async (req, res) => {
   try {
+    let params = {}
+    if (req.query.name!= null && req.query.name!=undefined && req.query.name.length>0) {
+      params["last_name"] = req.query.name
+    }
+    if (req.query.date!= null && req.query.date!=undefined) {
+      params["appointments.appointment_date"] =  new Date(req.query.date)     
+    }
+    if (req.query.status!= null && req.query.status!=undefined && req.query.status.length>0) {
+      params["order_status"] =  req.query.status
+    }
     if (req.user.role == UserRoles.TECHNICIAN || req.user.role == UserRoles.ADMIN) {
       // technicians and admins can see all orders
-      const orders = await Order.find();
-      res.status(200).json(orders);
     } else {
       // regular users can see only their orders 
-      const orders = await Order.find({user_id:req.user.id});
-      res.status(200).json(orders);
+      params["user_id"] = req.user.id
     }
+    const orders = await Order.find(params);
+    res.status(200).json(orders);
   } catch (err) {
     console.log(err);
     res.status(500).json({"status":err});

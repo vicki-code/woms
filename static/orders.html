@@ -46,14 +46,14 @@
                 <div class="md-12">
                     <h1>Orders</h1>
                     <div class="container orders-panel">
-                        <form class="row">
+                        <form class="row" id="frmSearch">
                             <div class="form-group col-sm-12 col-md-3">
-                                <label for="date">Date</label>
-                                <input type="date" name="date" required class="form-control">
+                                <label for="sDate">Date</label>
+                                <input type="date" name="sDate" required class="form-control">
                             </div>
                             <div class="form-group  col-sm-12 col-md-3">
-                                <label for="status">Status</label>
-                                <select class="form-select">
+                                <label for="sStatus">Status</label>
+                                <select class="form-select" name="sStatus">
                                     <option value="all" selected>All</option>
                                     <option value="requested">Requested</option>
                                     <option value="confirmed">Confirmed</option>
@@ -62,12 +62,12 @@
                                 </select>
                             </div>
                             <div class="form-group  col-sm-12 col-md-3">
-                                <label for="name">Name</label>
-                                <input type="text" name="name" class="form-control">
+                                <label for="name">Last Name</label>
+                                <input type="text" name="sName" class="form-control">
                             </div>
                             <div class="form-group  col-sm-12 col-md-3">
                                 <label for="btnSearch">&nbsp;</label>
-                                <input type="button" name="btnSearch" value="Find"
+                                <input type="button" name="btnSearch" value="Find" onclick="return search();"
                                     class="form-control btn btn-primary btn-find">
                             </div>
                         </form>
@@ -162,7 +162,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" id="btnCancelOrder" onclick="return cancelOrder();" class="btn btn-danger">Cancel order</button>
-                        <button type="button" id="btnSave" class="btn btn-primary">Save changes</button>
+                        <button type="button" id="btnSave" onclick="return updateOrder();" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -208,7 +208,29 @@
 
             var user = JSON.parse(localStorage.getItem("user"));
 
-            fetch('http://localhost:3300/api/orders/', {
+            const params = new URLSearchParams(window.location.search)
+            let sDate = document.getElementsByName("sDate")[0]
+            let sStatus = document.getElementsByName("sStatus")[0]
+            let sName = document.getElementsByName("sName")[0]
+
+            if (sDate!= null && sDate!=undefined) {
+                sDate.value = params.get("date")
+            }
+
+            if (sName!=null && sName!=undefined) {
+                sName.value = params.get("name")
+            }
+
+            if (sStatus!=null && sStatus!=undefined) {
+                let pStatus = params.get["status"]
+                if (pStatus!=null && pStatus!= undefined) {
+                    sStatus.value = pStatus
+                } else {
+                    sStatus = "all"
+                }
+            }
+
+            fetch('http://localhost:3300/api/orders/'+window.location.search, {
                 headers: {
                     'Content-Type': 'application/json',
                     'token': `Bearer ${user.accessToken}`
@@ -241,7 +263,7 @@
                             item.getElementsByClassName("name")[0].innerText = order.first_name + " " + order.last_name;
                             let latestAppt = order.appointments[order.appointments.length - 1]
                             item.getElementsByClassName("time")[0].innerText = latestAppt.preferred_time;
-                            item.getElementsByClassName("date")[0].innerText = latestAppt.appointment_date.toString('MM/dd/yyyy');
+                            item.getElementsByClassName("date")[0].innerText = formatDate(latestAppt.appointment_date);
                             let inpStatus = item.getElementsByClassName("status")[0]
                             inpStatus.innerText = order.order_status;
                             inpStatus.innerText.charAt(0).toUpperCase();
@@ -263,7 +285,8 @@
         orderDetails.addEventListener('show.bs.modal', function (event) {
             let row = event.relatedTarget
             let idx = row.getAttribute('data-bs-idx')
-            selectedOrder =  orders[idx]._id;
+            selectedOrderId =  orders[idx]._id;
+            selectedOrder = orders[idx];
 
             let modalTitle = orderDetails.querySelector('.modal-title')
             modalTitle.textContent = orders[idx]._id + " | " + orders[idx].first_name + " " + orders[idx].last_name
@@ -277,8 +300,13 @@
             let address = orderDetails.querySelector('.modal-body [name="address"]')
             address.value = orders[idx].address
 
+            let latestAppt = orders[idx].appointments[orders[idx].appointments.length - 1]
+
             let date = orderDetails.querySelector('.modal-body [name="date"]')
-            date.value = orders[idx].date
+            date.value = formatDate(latestAppt.appointment_date);
+
+            let time = orderDetails.querySelector('.modal-body [name="time"]')
+            time.value = latestAppt.preferred_time;
 
             let status = orderDetails.querySelector('.modal-body [name="status"]')
             status.value = orders[idx].order_status
@@ -306,12 +334,13 @@
             }
         })
 
+        let selectedOrderId = null
         let selectedOrder = null
 
         function cancelOrder() {
-            var user = JSON.parse(localStorage.getItem("user"));
+            let user = JSON.parse(localStorage.getItem("user"));
 
-            fetch('/api/orders/'+selectedOrder+'/cancel', {
+            fetch('/api/orders/'+selectedOrderId+'/cancel', {
                 method: "PUT", 
                 headers: {
                     'Content-Type': 'application/json',
@@ -331,6 +360,95 @@
                         window.location.href = '/orders.html';
                     }
                 })
+            return false;
+        }
+
+        function updateOrder() {
+            let user = JSON.parse(localStorage.getItem("user"));
+
+            let order = selectedOrder
+            let firstName = orderDetails.querySelector('.modal-body [name="first_name"]')
+            let lastName = orderDetails.querySelector('.modal-body [name="last_name"]')
+            let address = orderDetails.querySelector('.modal-body [name="address"]')
+            let date = orderDetails.querySelector('.modal-body [name="date"]')
+            let time = orderDetails.querySelector('.modal-body [name="time"]')
+            let status = orderDetails.querySelector('.modal-body [name="status"]')
+            let phone = orderDetails.querySelector('.modal-body [name="phone"]')
+            let email = orderDetails.querySelector('.modal-body [name="email"]')
+            let description = orderDetails.querySelector('.modal-body [name="description"]')
+
+            order.first_name = firstName.value;
+            order.last_name = lastName.value;
+            order.address = address.value;
+            order.order_status = status.value;
+            order.phone = phone.value;
+            order.email = email.value;
+            order.description = description.value;
+
+            let appt = order.appointments[order.appointments.length-1]
+            appt.preferred_time = time.value;
+            appt.appointment_date = date.value;
+
+            fetch('/api/orders/'+selectedOrderId, {
+                method: "PUT", 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': `Bearer ${user.accessToken}`
+                },
+                body: JSON.stringify(order)
+            })
+                .then(response => {
+                    if (response.status == 200) {
+                        return response.json();
+                    } else {
+                        let errLabel = document.getElementById("lblError");
+                        errLabel.classList.remove("hidden");
+                        errLabel.innerText = response.json().status;
+                        return null;
+                    }
+                }).then(data => {
+                    if (data != null) {
+                        alert("Changes saved!")
+                        window.location.href = '/orders.html';
+                    }
+                })
+            return false;
+        }
+
+        function search() {
+            let formData = new FormData(document.getElementById("frmSearch"));
+            let formJson = Object.fromEntries(formData);
+
+            let query = ""
+            if (formJson.sName.length>0) {
+                if (query.length>0) {
+                    query += "&"  
+                } else {
+                    query += "?"
+                }
+                query += "name="+encodeURIComponent(formJson.sName)
+            }
+
+            if (formJson.sStatus!="all") {
+                if (query.length>0) {
+                    query += "&"  
+                } else {
+                    query += "?"
+                }
+                query += "status="+encodeURIComponent(formJson.sStatus)
+            }
+
+            if (formJson.sDate!=null && formJson.sDate!=undefined && formJson.sDate!="") {
+                if (query.length>0) {
+                    query += "&"  
+                } else {
+                    query += "?"
+                }
+                query += "date="+encodeURIComponent(formJson.sDate)
+            }
+
+            window.location.href = location.protocol + '//' + location.host + location.pathname +query
+
             return false;
         }
     </script>
