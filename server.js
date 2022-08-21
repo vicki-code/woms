@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 
 const authApi = require("./routes/authApi")
 const orderApi = require("./routes/orderApi")
+const messageApi = require("./routes/messageApi")
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ mongoose
 app.use(express.json());
 app.use("/api/auth", authApi);
 app.use("/api/orders", orderApi);
+app.use("/api/messages", messageApi);
 app.use('/', express.static('static'))
 
 app.listen(process.env.PORT || 3300, function () {
