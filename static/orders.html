@@ -25,7 +25,7 @@
         <div class="main-menu">
             <div class="main-menu-logo"></div>
             <div class="main-menu-container">
-                <div class="main-menu-topbar"></div>
+                <div class="main-menu-topbar"><span id="lblCurrentUser"/></div>
                 <nav>
                     <div class="main-menu-list">
                         <div class="main-menu-item item-home"><a href="/index.html">Home</a></div>
@@ -35,6 +35,7 @@
                         <div class="main-menu-item item-login"><a href="/login.html">Login</a></div>
                         <div class="main-menu-item item-logout"><a href="/logout.html">Log out</a></div>
                         <div class="main-menu-item item-contact"><a href="/contact_us.html">Contact Us</a></div>
+                        <div class="main-menu-item item-messages"><a href="/messages.html">Messages</a></div>
                     </div>
                 </nav>
             </div>
@@ -161,7 +162,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" id="btnCancelOrder" onclick="return cancelOrder();" class="btn btn-danger">Cancel order</button>
+                        <button type="button" id="btnCancelOrder" name="btnCancelOrder" onclick="return cancelOrder();" class="btn btn-danger">Cancel order</button>
                         <button type="button" id="btnSave" onclick="return updateOrder();" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
@@ -320,17 +321,18 @@
             let description = orderDetails.querySelector('.modal-body [name="description"]')
             description.value = orders[idx].description
 
-            let btnCancelOrder = orderDetails.querySelector('.modal-body [name="first_name"]')
-            if (orders[idx].order_status == "requested" || rders[idx].order_status == "confirmed") {
+            let btnCancelOrder = orderDetails.querySelector('#btnCancelOrder')
+            if (orders[idx].order_status == "requested" || orders[idx].order_status == "confirmed") {
                 btnCancelOrder.classList.remove("hidden")
             } else {
                 btnCancelOrder.classList.add("hidden")
             }
 
-            if (orders[idx].order_status == "requested" || rders[idx].order_status == "confirmed") {
-                btnCancelOrder.classList.remove("hidden")
+            let btnSaveOrder = orderDetails.querySelector('#btnSaveOrder')
+            if (isTechnicianOrAdmin()) {
+                btnSaveOrder.classList.remove("hidden")
             } else {
-                btnCancelOrder.classList.add("hidden")
+                btnSaveOrder.classList.add("hidden")
             }
         })
 

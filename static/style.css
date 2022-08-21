@@ -44,6 +44,12 @@ body {
 .main-menu-topbar {
     height: 50px;
     background-color: #193a5a;
+    display:flex;
+    justify-content: end;
+    padding: 5px;
+    align-items: center;
+    color: white;
+    font-weight: 600;
 }
 
 .main-menu-item {

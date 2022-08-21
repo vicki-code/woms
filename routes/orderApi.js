@@ -5,7 +5,7 @@ const uuid = require("uuid");
 const {
   verifyToken,
   verifyAccess,
-  verifyAdmin,
+  verifyTechnicianOrAdmin,
 } = require("./verifyToken");
 
 const router = require("express").Router();
@@ -27,7 +27,7 @@ router.post("/", verifyToken, async (req, res) => {
 });
 
 //UPDATE
-router.put("/:id",  verifyAdmin, async (req, res) => {
+router.put("/:id",  verifyTechnicianOrAdmin, async (req, res) => {
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,

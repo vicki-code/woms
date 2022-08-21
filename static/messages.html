@@ -1,0 +1,142 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appliance Repair</title>
+    <link rel="stylesheet" href="./assets/css/bootstrap.css">
+    <script src="./assets/js/bootstrap.bundle.js"></script>
+    <script src="./main.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        window.onload = function (e) {
+            var user = JSON.parse(localStorage.getItem("user"));
+
+            if (!isUserLoggedIn() || (user.role != "admin" && user.role != "technician")) {
+                window.location.href = '/login.html';
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="main-menu">
+            <div class="main-menu-logo"></div>
+            <div class="main-menu-container">
+                <div class="main-menu-topbar"><span id="lblCurrentUser"/></div>
+                <nav>
+                    <div class="main-menu-list">
+                        <div class="main-menu-item item-home"><a href="/index.html">Home</a></div>
+                        <div class="main-menu-item item-request"><a href="/request.html">Online Booking</a></div>
+                        <div class="main-menu-item item-orders"><a href="/orders.html">Orders</a></div>
+                        <div class="main-menu-item item-register"><a href="/register.html">Sign up</a></div>
+                        <div class="main-menu-item item-login"><a href="/login.html">Login</a></div>
+                        <div class="main-menu-item item-logout"><a href="/logout.html">Log out</a></div>
+                        <div class="main-menu-item item-contact"><a href="/contact_us.html">Contact Us</a></div>
+                        <div class="main-menu-item item-messages"><a href="/messages.html">Messages</a></div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <main class="content">
+        <div class="container content-block">
+            <div class="row">
+                <div class="md-12">
+                    <h1>Messages</h1>
+                    <div class="container orders-panel">
+                        <div id="itemsContainer" class="container order-items">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12-cal">
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">
+        <div>
+            <ul>
+                <li>© 2022 Appliance Repair</li>
+                <li>Phone: +1 403-111-2233</li>
+            </ul>
+        </div>
+    </footer>
+
+
+    <template id="itemTemplate">
+        <div class="row order-item">
+            <div class="col-sm-3 col-md-3 order-item-date">
+                <div class="name"></div>
+                <div class="email"></div>
+                <div class="phone"></div>
+            </div>
+            <div class="col-sm-9 col-md-9 order-item-info">
+                <div class="message"></div>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        let messages = null;
+
+        function renderItems() {
+            var user = JSON.parse(localStorage.getItem("user"));
+
+            if (!isUserLoggedIn() || (user.role != "admin" && user.role != "technician")) {
+                alert("Plese log in to see messages!");
+                window.location.href = "/Login.html"
+                return false;
+            }
+
+            fetch('http://localhost:3300/api/messages/', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'token': `Bearer ${user.accessToken}`
+                }
+            })
+                .then(response => {
+                    if (response.status == 200 || response.status == 304) {
+                        return response.json()
+                    } else {
+                        alert("Error:" + response.statusText)
+                        return null
+                    }
+                }
+                ).then(data => {
+                    messages = data;
+
+                    if (messages != null && messages != undefined) {
+                        let temp = document.getElementById("itemTemplate");
+                        let itemsContainer = document.getElementById("itemsContainer");
+                        //get the div element from the template:
+                        let template = temp.content.querySelector("div");
+                        //for each item in the array:
+                        for (let i = 0; i < messages.length; i++) {
+                            //Create a new node, based on the template:
+                            let item = document.importNode(template, true);
+                            let message = messages[i]
+                            item.setAttribute("data-bs-idx", i.toString())
+                            item.getElementsByClassName("name")[0].innerText = message.name;
+                            item.getElementsByClassName("email")[0].innerText = message.email;
+                            item.getElementsByClassName("phone")[0].innerText = message.phone;
+                            item.getElementsByClassName("message")[0].innerText = message.message;
+
+                            //append the new node
+                            itemsContainer.appendChild(item);
+                        }
+                    }
+                })
+        }
+
+        window.addEventListener('load', (event) => {
+            renderItems();
+        });
+    </script>
+</body>
+
+</html>

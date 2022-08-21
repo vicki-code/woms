@@ -6,6 +6,7 @@ const {
     verifyToken,
     verifyAccess,
     verifyAdmin,
+    verifyTechnicianOrAdmin,
   } = require("./verifyToken");
   
 const router = require("express").Router();
@@ -27,7 +28,7 @@ router.post("/", async (req, res) => {
 
 
 //GET ALL
-router.get("/", verifyAdmin, async (req, res) => {
+router.get("/", verifyTechnicianOrAdmin, async (req, res) => {
     try {
       const messages = await Message.find();
       res.status(200).json(messages);

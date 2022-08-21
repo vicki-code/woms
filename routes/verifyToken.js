@@ -35,8 +35,19 @@ const verifyAdmin = (req, res, next) => {
     });
 };
 
+const verifyTechnicianOrAdmin = (req, res, next) => {
+    verifyToken(req, res, () => {
+        if (req.user.role == UserRoles.ADMIN || req.user.role == UserRoles.TECHNICIAN) {
+            next();
+        } else {
+            res.status(403).json("Access denied");
+        }
+    });
+};
+
 module.exports = {
     verifyToken,
     verifyAccess,
     verifyAdmin,
+    verifyTechnicianOrAdmin,
 };
