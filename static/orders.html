@@ -163,7 +163,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" id="btnCancelOrder" name="btnCancelOrder" onclick="return cancelOrder();" class="btn btn-danger">Cancel order</button>
-                        <button type="button" id="btnSave" onclick="return updateOrder();" class="btn btn-primary">Save changes</button>
+                        <button type="button" id="btnSave" name="btnSave" onclick="return updateOrder();" class="btn btn-primary">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -321,14 +321,14 @@
             let description = orderDetails.querySelector('.modal-body [name="description"]')
             description.value = orders[idx].description
 
-            let btnCancelOrder = orderDetails.querySelector('#btnCancelOrder')
+            let btnCancelOrder = document.getElementById('btnCancelOrder')
             if (orders[idx].order_status == "requested" || orders[idx].order_status == "confirmed") {
                 btnCancelOrder.classList.remove("hidden")
             } else {
                 btnCancelOrder.classList.add("hidden")
             }
 
-            let btnSaveOrder = orderDetails.querySelector('#btnSaveOrder')
+            let btnSaveOrder = document.getElementById('btnSave')
             if (isTechnicianOrAdmin()) {
                 btnSaveOrder.classList.remove("hidden")
             } else {
