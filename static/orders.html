@@ -332,7 +332,7 @@
             if (isTechnicianOrAdmin()) {
  
                 for (let item of orderDetails.getElementsByClassName("staff-editable")) {
-                    item.setAttribute("disabled", false)
+                    item.removeAttribute("disabled")
                 }
                 btnSaveOrder.classList.remove("hidden")
             } else {
