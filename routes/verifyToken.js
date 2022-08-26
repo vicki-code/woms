@@ -15,16 +15,6 @@ const verifyToken = (req, res, next) => {
     }
 };
 
-const verifyAccess = (req, res, next) => {
-    verifyToken(req, res, () => {
-        if (req.user.id === req.params.id || req.user.role == UserRoles.TECHNICIAN || req.user.role == UserRoles.ADMIN) {
-            next();
-        } else {
-            res.status(403).json({ status: "Access denied" });
-        }
-    });
-};
-
 const verifyAdmin = (req, res, next) => {
     verifyToken(req, res, () => {
         if (req.user.role == UserRoles.ADMIN) {
@@ -47,7 +37,6 @@ const verifyTechnicianOrAdmin = (req, res, next) => {
 
 module.exports = {
     verifyToken,
-    verifyAccess,
     verifyAdmin,
     verifyTechnicianOrAdmin,
 };

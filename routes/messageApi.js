@@ -4,7 +4,6 @@ const uuid = require("uuid");
 
 const {
     verifyToken,
-    verifyAccess,
     verifyAdmin,
     verifyTechnicianOrAdmin,
   } = require("./verifyToken");

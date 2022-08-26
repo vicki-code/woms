@@ -4,7 +4,6 @@ const UserRoles = require("../models/UserRoles");
 const uuid = require("uuid");
 const {
   verifyToken,
-  verifyAccess,
   verifyTechnicianOrAdmin,
 } = require("./verifyToken");
 
@@ -44,12 +43,27 @@ router.put("/:id",  verifyTechnicianOrAdmin, async (req, res) => {
 });
 
 //Cancel
-router.put("/:id/cancel", verifyAccess, async (req, res) => {
+router.put("/:id/cancel", verifyToken, async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id)
 
-    if (order.order_status!=OrderStatuses.REQUESTED && order.order_status!=OrderStatuses.CONFIRMED) {
-      res.status(400).json({"status":"Service request can be canceled only if it is in Requested or Confirmed state"})
+    let params = {
+      _id: req.params.id,
+    }
+
+    if ((req.user.role != UserRoles.ADMIN) && (req.user.role!= UserRoles.TECHNICIAN)) {
+      params["user_id"] = req.user.id
+    }
+
+    const orders = await Order.find(params)
+    const order = orders[0]
+    if (order == null || order == undefined) {
+      res.status(403).json({"status":"Service request does not exist or you do not have permissions to edit it."})
+      return
+    }
+
+    if ((order.order_status!=OrderStatuses.REQUESTED) && (order.order_status!=OrderStatuses.CONFIRMED)) {
+      res.status(400).json({"status":"Service request can be canceled only if it is in Requested or Confirmed state. Current status "+order.order_status})
+      return
     }
 
     const updatedOrder = await Order.findByIdAndUpdate(
